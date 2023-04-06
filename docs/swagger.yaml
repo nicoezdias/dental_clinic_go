@@ -1,0 +1,655 @@
+definitions:
+  domain.Appointment:
+    properties:
+      date:
+        type: string
+      dentist:
+        $ref: '#/definitions/domain.Dentist'
+      hour:
+        type: string
+      id:
+        type: integer
+      patient:
+        $ref: '#/definitions/domain.Patient'
+    type: object
+  domain.Dentist:
+    properties:
+      id:
+        type: integer
+      last_name:
+        type: string
+      license:
+        type: string
+      name:
+        type: string
+    type: object
+  domain.Patient:
+    properties:
+      admission_date:
+        type: string
+      dni:
+        type: integer
+      domicilio:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      name:
+        type: string
+    type: object
+  web.errorResponse:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+      status:
+        type: integer
+    type: object
+  web.response:
+    properties:
+      data: {}
+    type: object
+info:
+  contact:
+    name: API Support
+    url: https://developers.ctd.com.ar/support
+  description: This API handle a Dental Clinic .
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://developers.ctd.com.ar/es_ar/terminos-y-condiciones
+  title: Dental API
+  version: "1.0"
+paths:
+  /appointments:
+    post:
+      description: Create a new appointment in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Create a new appointment
+      tags:
+      - appointments
+  /appointments/:id:
+    delete:
+      description: Delete a appointment by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Appointment Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Delete a appointment
+      tags:
+      - appointments
+    get:
+      description: Get a appointment by Id from repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Appointment Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Get a appointment by Id
+      tags:
+      - appointments
+    patch:
+      description: Update a appointment by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      - description: Appointment Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a appointment
+      tags:
+      - appointments
+    put:
+      description: Update a appointment by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      - description: Appointment Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a appointment by id
+      tags:
+      - appointments
+  /appointments/dni/:dni:
+    get:
+      description: Get a appointments by patient.dni from repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient Dni
+        in: path
+        name: dni
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Get a appointments by patient.dni
+      tags:
+      - appointments
+  /appointments/dni/license:
+    post:
+      description: Create a new appointment through the patient's ID and the dentist's
+        registration in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: DNI
+        in: query
+        name: dni
+        required: true
+        type: integer
+      - description: License
+        in: query
+        name: license
+        required: true
+        type: string
+      - description: Appointment
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Appointment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Create a new appointment through the patient's ID and the dentist's
+        registration
+      tags:
+      - appointments
+  /dentists:
+    post:
+      description: Create a new dentist in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Dentist'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Create a new dentist
+      tags:
+      - dentists
+  /dentists/:id:
+    delete:
+      description: Delete a dentist by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Dentist Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Delete a dentist
+      tags:
+      - dentists
+    get:
+      description: Get a dentist by Id from repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Dentist Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Get a dentist by Id
+      tags:
+      - dentists
+    patch:
+      description: Update a dentist by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Dentist'
+      - description: Dentist Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a dentist
+      tags:
+      - dentists
+    put:
+      description: Update a dentist by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Dentist
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Dentist'
+      - description: Dentist Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a dentist by id
+      tags:
+      - dentists
+  /patients:
+    post:
+      description: Create a new patient in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Patient'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Create a new patient
+      tags:
+      - patients
+  /patients/:id:
+    delete:
+      description: Delete a patient by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Delete a patient
+      tags:
+      - patients
+    get:
+      description: Get a patient by Id from repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Get a patient by Id
+      tags:
+      - patients
+    patch:
+      description: Update a patient by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Patient'
+      - description: Patient Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a patient
+      tags:
+      - patients
+    put:
+      description: Update a patient by id in repository
+      parameters:
+      - description: token
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: Patient
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Patient'
+      - description: Patient Id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/web.response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/web.errorResponse'
+      summary: Update a patient by id
+      tags:
+      - patients
+swagger: "2.0"
