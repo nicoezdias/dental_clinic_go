@@ -1,4 +1,4 @@
-# [Dental Clinic](https://github.com/nicoezdias/dental_clinic_go).
+# Dental Clinic [(link)](https://github.com/nicoezdias/dental_clinic_go)
 
 ## Preconditions
 
