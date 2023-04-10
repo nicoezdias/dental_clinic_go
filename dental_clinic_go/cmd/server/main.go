@@ -31,9 +31,6 @@ import (
 func main() {
 
 	/* -------------------- Cargamos las variables de entorno ------------------- */
-	// if err := godotenv.Load(".env"); err != nil {
-	// 	panic("error loading .env file")
-	// }
 	DB_URL := os.Getenv("DB_URL")
 	HOST := os.Getenv("HOST")
 	PORT := os.Getenv("PORT")

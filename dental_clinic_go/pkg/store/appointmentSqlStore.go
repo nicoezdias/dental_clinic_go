@@ -19,9 +19,9 @@ func NewAppointmentSqlStore(db *sql.DB) AppointmentStore {
 // GetByID devuelve un turno por su id
 func (s *appointmentSqlStore) GetByID(id int) (domain.Appointment, error) {
 	var appointmentReturn domain.Appointment
-	query := "SELECT appointment.id, appointment.date, appointment.hour, patient.*, dentist.* FROM appointment INNER JOIN patient ON appointment.patient_id = patient.id INNER JOIN dentist ON appointment.dentist_id = dentist.id WHERE appointment.id = ?;"
+	query := "SELECT appointment.id, appointment.date, appointment.hour, appointment.description, patient.*, dentist.* FROM appointment INNER JOIN patient ON appointment.patient_id = patient.id INNER JOIN dentist ON appointment.dentist_id = dentist.id WHERE appointment.id = ?;"
 	row := s.DB.QueryRow(query, id)
-	err := row.Scan(&appointmentReturn.Id, &appointmentReturn.Date, &appointmentReturn.Hour, &appointmentReturn.Patient.Id, &appointmentReturn.Patient.Name, &appointmentReturn.Patient.LastName, &appointmentReturn.Patient.Domicilio, &appointmentReturn.Patient.Dni, &appointmentReturn.Patient.Email, &appointmentReturn.Patient.AdmissionDate, &appointmentReturn.Dentist.Id, &appointmentReturn.Dentist.Name, &appointmentReturn.Dentist.LastName, &appointmentReturn.Dentist.License)
+	err := row.Scan(&appointmentReturn.Id, &appointmentReturn.Date, &appointmentReturn.Hour, &appointmentReturn.Description, &appointmentReturn.Patient.Id, &appointmentReturn.Patient.Name, &appointmentReturn.Patient.LastName, &appointmentReturn.Patient.Domicilio, &appointmentReturn.Patient.Dni, &appointmentReturn.Patient.Email, &appointmentReturn.Patient.AdmissionDate, &appointmentReturn.Dentist.Id, &appointmentReturn.Dentist.Name, &appointmentReturn.Dentist.LastName, &appointmentReturn.Dentist.License)
 	if err != nil {
 		return domain.Appointment{}, err
 	}
@@ -32,7 +32,7 @@ func (s *appointmentSqlStore) GetByID(id int) (domain.Appointment, error) {
 func (s *appointmentSqlStore) GetByDni(dni int) ([]domain.Appointment, error) {
 	var appointments []domain.Appointment
 
-	query := "SELECT appointment.id, appointment.date, appointment.hour, patient.*, dentist.* FROM appointment INNER JOIN patient ON appointment.patient_id = patient.id INNER JOIN dentist ON appointment.dentist_id = dentist.id WHERE patient.dni = ?"
+	query := "SELECT appointment.id, appointment.date, appointment.hour, appointment.description, patient.*, dentist.* FROM appointment INNER JOIN patient ON appointment.patient_id = patient.id INNER JOIN dentist ON appointment.dentist_id = dentist.id WHERE patient.dni = ?"
 	rows, err := s.DB.Query(query, dni)
 	if err != nil {
 		return []domain.Appointment{}, err
@@ -41,7 +41,7 @@ func (s *appointmentSqlStore) GetByDni(dni int) ([]domain.Appointment, error) {
 
 	for rows.Next() {
 		var appointmentReturn domain.Appointment
-		err := rows.Scan(&appointmentReturn.Id, &appointmentReturn.Date, &appointmentReturn.Hour, &appointmentReturn.Patient.Id, &appointmentReturn.Patient.Name, &appointmentReturn.Patient.LastName, &appointmentReturn.Patient.Domicilio, &appointmentReturn.Patient.Dni, &appointmentReturn.Patient.Email, &appointmentReturn.Patient.AdmissionDate, &appointmentReturn.Dentist.Id, &appointmentReturn.Dentist.Name, &appointmentReturn.Dentist.LastName, &appointmentReturn.Dentist.License)
+		err := rows.Scan(&appointmentReturn.Id, &appointmentReturn.Date, &appointmentReturn.Hour, &appointmentReturn.Description, &appointmentReturn.Patient.Id, &appointmentReturn.Patient.Name, &appointmentReturn.Patient.LastName, &appointmentReturn.Patient.Domicilio, &appointmentReturn.Patient.Dni, &appointmentReturn.Patient.Email, &appointmentReturn.Patient.AdmissionDate, &appointmentReturn.Dentist.Id, &appointmentReturn.Dentist.Name, &appointmentReturn.Dentist.LastName, &appointmentReturn.Dentist.License)
 		if err != nil {
 			return []domain.Appointment{}, err
 		}
@@ -55,7 +55,7 @@ func (s *appointmentSqlStore) GetByDni(dni int) ([]domain.Appointment, error) {
 
 // Create agrega un nuevo turno
 func (s *appointmentSqlStore) Create(appointment domain.Appointment) (domain.Appointment, error) {
-	stmt, err := s.DB.Prepare("INSERT INTO appointment (date, hour, patient_id, dentist_id) VALUES (?, ?, ?, ?);")
+	stmt, err := s.DB.Prepare("INSERT INTO appointment (date, hour, description, patient_id, dentist_id) VALUES (?, ?, ?, ?, ?);")
 	if err != nil {
 		return domain.Appointment{}, err
 	}
@@ -69,7 +69,7 @@ func (s *appointmentSqlStore) Create(appointment domain.Appointment) (domain.App
 		return domain.Appointment{}, err
 	}
 	hour := time.Date(1970, 1, 1, t.Hour(), t.Minute(), t.Second(), 0, time.UTC).Format("15:04:05")
-	result, err := stmt.Exec(date, hour, appointment.Patient.Id, appointment.Dentist.Id)
+	result, err := stmt.Exec(date, hour, appointment.Description, appointment.Patient.Id, appointment.Dentist.Id)
 	if err != nil {
 		return domain.Appointment{}, err
 	}
@@ -84,21 +84,21 @@ func (s *appointmentSqlStore) Update(appointment domain.Appointment) (bool, bool
 	if err != nil {
 		return false, false, domain.Appointment{}, err
 	}
-	stmt, err := s.DB.Prepare("UPDATE appointment SET date = ?, hour = ?, patient_id = ?, dentist_id = ? WHERE id = ?;")
+	stmt, err := s.DB.Prepare("UPDATE appointment SET date = ?, hour = ?, description = ?, patient_id = ?, dentist_id = ? WHERE id = ?;")
 	if err != nil {
 		return false, false, domain.Appointment{}, err
 	}
 	defer stmt.Close()
-	date, err := time.Parse("2006-01-02", appointment.Date)
+	date, err := time.Parse("2006-01-02", appointmentUpdated.Date)
 	if err != nil {
 		return false, false, domain.Appointment{}, err
 	}
-	t, err := time.Parse("15:04:05", appointment.Hour)
+	t, err := time.Parse("15:04:05", appointmentUpdated.Hour)
 	if err != nil {
 		return false, false, domain.Appointment{}, err
 	}
 	hour := time.Date(1970, 1, 1, t.Hour(), t.Minute(), t.Second(), 0, time.UTC).Format("15:04:05")
-	_, err = stmt.Exec(date, hour, appointmentUpdated.Patient.Id, appointmentUpdated.Dentist.Id, appointmentUpdated.Id)
+	_, err = stmt.Exec(date, hour, appointmentUpdated.Description, appointmentUpdated.Patient.Id, appointmentUpdated.Dentist.Id, appointmentUpdated.Id)
 	if err != nil {
 		return false, false, domain.Appointment{}, err
 	}
@@ -128,6 +128,9 @@ func (s *appointmentSqlStore) CompleteEmptyAttributes(updatedAppointment domain.
 	}
 	if updatedAppointment.Hour != "" {
 		a.Hour = updatedAppointment.Hour
+	}
+	if updatedAppointment.Description != "" {
+		a.Description = updatedAppointment.Description
 	}
 	if (updatedAppointment.Patient != domain.Patient{} && updatedAppointment.Patient.Id != 0) {
 		if a.Patient.Id != updatedAppointment.Patient.Id {

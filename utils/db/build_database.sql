@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS appointment (
   id INT(11) NOT NULL AUTO_INCREMENT,
   date DATE NOT NULL,
   hour TIME NOT NULL,
+  description TEXT NOT NULL,
   patient_id INT(11) NOT NULL,
   dentist_id INT(11) NOT NULL,
   PRIMARY KEY (id),
@@ -57,9 +58,9 @@ CREATE TABLE IF NOT EXISTS appointment (
   FOREIGN KEY (dentist_id) REFERENCES dentist(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO appointment (date, hour, patient_id, dentist_id) VALUES
-  ("2022-03-15", "10:00:00", 1, 1),
-  ("2022-03-16", "09:00:00", 2, 3),
-  ("2022-03-17", "11:00:00", 4, 5),
-  ("2022-03-18", "15:00:00", 6, 7),
-  ("2022-03-19", "14:00:00", 8, 9);
+INSERT INTO appointment (date, hour, description, patient_id, dentist_id) VALUES
+  ('2023-04-12', '10:00:00', 'Limpieza dental de rutina', 1, 1),
+  ('2023-04-13', '15:30:00', 'Revisión y tratamiento de caries', 2, 3),
+  ('2023-04-15', '11:00:00', 'Ortodoncia', 4, 5),
+  ('2023-04-16', '16:45:00', 'Extracción de muela del juicio', 6, 7),
+  ('2023-04-17', '14:15:00', 'Implante dental', 8, 9);

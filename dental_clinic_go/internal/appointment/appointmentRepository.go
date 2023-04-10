@@ -79,6 +79,7 @@ func (r *appointmentRepository) Update(id int, updatedAppointment domain.Appoint
 	updatedAppointment.Id = id
 	patientFlag, dentistFlag, p, err := r.storage.Update(updatedAppointment)
 	if err != nil {
+		fmt.Println(err)
 		return domain.Appointment{}, errors.New("error updating appointment")
 	}
 	if patientFlag {

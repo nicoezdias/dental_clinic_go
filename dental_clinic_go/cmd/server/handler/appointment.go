@@ -242,25 +242,29 @@ func (h *appointmentHandler) Patch() gin.HandlerFunc {
 		var appointment domain.Appointment
 		err = c.BindJSON(&appointment)
 		if err != nil {
+			fmt.Println(err)
 			web.Failure(c, 400, err)
 			return
 		}
 		if appointment.Date != "" {
 			valid, err := h.validateDate(appointment)
 			if !valid {
+				fmt.Println(err)
 				web.Failure(c, 400, err)
 				return
 			}
 		}
 		if appointment.Hour != "" {
-			valid, err := h.validateDate(appointment)
+			valid, err := h.validateHour(appointment)
 			if !valid {
+				fmt.Println(err)
 				web.Failure(c, 400, err)
 				return
 			}
 		}
 		p, err := h.s.Update(id, appointment)
 		if err != nil {
+			fmt.Println(err)
 			web.Failure(c, 400, err)
 			return
 		}
@@ -301,6 +305,8 @@ func (h *appointmentHandler) Delete() gin.HandlerFunc {
 // validateEmptys valida que los campos no esten vacios
 func (h *appointmentHandler) validateEmptys(appointment domain.Appointment) (bool, error) {
 	switch {
+	case appointment.Description == "":
+		return false, errors.New("Description can't be empty")
 	case appointment.Patient == domain.Patient{}:
 		return false, errors.New("Patient can't be empty")
 	case appointment.Patient.Id == 0:
