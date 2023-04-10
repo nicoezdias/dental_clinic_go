@@ -9,11 +9,11 @@ import (
 	"dental_clinic_go/internal/patient"
 	"dental_clinic_go/pkg/middleware"
 	"dental_clinic_go/pkg/store"
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -31,24 +31,30 @@ import (
 func main() {
 
 	/* -------------------- Cargamos las variables de entorno ------------------- */
-	if err := godotenv.Load(".env"); err != nil {
-		panic("error loading .env file")
-	}
+	// if err := godotenv.Load(".env"); err != nil {
+	// 	panic("error loading .env file")
+	// }
+	DB_URL := os.Getenv("DB_URL")
+	HOST := os.Getenv("HOST")
+	PORT := os.Getenv("PORT")
 
 	/* ----------------------- Levantamos la base de datos ---------------------- */
-	db, err := sql.Open("mysql", os.Getenv("DB_URL"))
+	db, err := sql.Open("mysql", DB_URL)
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 	errPing := db.Ping()
 	if errPing != nil {
+		fmt.Println("DB_URL " + DB_URL)
+		fmt.Println("HOST " + HOST)
+		fmt.Println("PORT " + PORT)
 		panic(errPing.Error())
 	}
 
 	/* -------------------- Instanciamos gin-gonic y swagger -------------------- */
 	r := gin.Default()
-	docs.SwaggerInfo.Host = os.Getenv("HOST")
+	docs.SwaggerInfo.Host = HOST
 	r.GET("/docs/*any",
 		ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -99,5 +105,5 @@ func main() {
 		appointments.DELETE(":id", middleware.Authentication(), appointmentHandler.Delete())
 	}
 
-	r.Run(os.Getenv("HOST"))
+	r.Run(fmt.Sprintf(":%s", PORT))
 }
