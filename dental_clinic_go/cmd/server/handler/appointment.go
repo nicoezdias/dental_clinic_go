@@ -242,14 +242,12 @@ func (h *appointmentHandler) Patch() gin.HandlerFunc {
 		var appointment domain.Appointment
 		err = c.BindJSON(&appointment)
 		if err != nil {
-			fmt.Println(err)
 			web.Failure(c, 400, err)
 			return
 		}
 		if appointment.Date != "" {
 			valid, err := h.validateDate(appointment)
 			if !valid {
-				fmt.Println(err)
 				web.Failure(c, 400, err)
 				return
 			}
@@ -257,14 +255,12 @@ func (h *appointmentHandler) Patch() gin.HandlerFunc {
 		if appointment.Hour != "" {
 			valid, err := h.validateHour(appointment)
 			if !valid {
-				fmt.Println(err)
 				web.Failure(c, 400, err)
 				return
 			}
 		}
 		p, err := h.s.Update(id, appointment)
 		if err != nil {
-			fmt.Println(err)
 			web.Failure(c, 400, err)
 			return
 		}

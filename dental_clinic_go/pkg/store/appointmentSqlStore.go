@@ -115,7 +115,7 @@ func (s *appointmentSqlStore) Delete(id int) error {
 	return nil
 }
 
-// completeEmptyAttributes compara dos turnos y se queda con los campos diferentes
+// completeEmptyAttributes compara el turno viejo con el nuevo y se queda con los campos diferentes
 func (s *appointmentSqlStore) CompleteEmptyAttributes(updatedAppointment domain.Appointment) (bool, bool, domain.Appointment, error) {
 	a, err := s.GetByID(updatedAppointment.Id)
 	if err != nil {
