@@ -1,6 +1,6 @@
 # Dental Clinic
 
-You can find this project in [Dental Clinic](https://github.com/nicoezdias/dental_clinic_go).
+### You can find this project in [Dental Clinic](https://github.com/nicoezdias/dental_clinic_go).
 
 ## Preconditions
 
